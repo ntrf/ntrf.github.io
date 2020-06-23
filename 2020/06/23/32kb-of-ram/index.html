@@ -22,7 +22,7 @@
   <link rel="icon" type="image/png" href="/icon/favicon-16.png" sizes="16x16">
   <link rel="icon" type="image/png" href="/icon/favicon-32.png" sizes="32x32">
 
-  <meta name="google-site-verification" content="2vEKy9n6t9yJOktynsG3Eo49y0WJYXk2ww_pCd1-IjE" />
+  <meta name="google-site-verification" content="0c_1A04yKqsU7pW7ZTKyUrLG8M8EtOAqg0drUSP_unU" />
 
   <link rel="alternate" href="/atom.xml" title="Ntrf&#39;s blog" type="application/atom+xml">
   <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
@@ -86,7 +86,7 @@
 <p>If we go back in time and look at what was available 35-40 years ago, you’ll see that things didn’t change that much. I’m going to use ZX Spectrum&trade; 48 as an example. It had 16KB to 48KB of memory and all mof it was available in one cycle. Well almost, Z80&trade; CPU works in 4 clock units, during the first two cycles it fetches instructions and then it executes them. So effectively 1 CPU cycle = 4 clock cycles. Memory was running as 2x speed, serving both the CPU and a simple DMA for video generation. Clock speed was ~1.75MHz for memory and twice as low for CPU (oh those weird old days of CPUs being slower than memory). Depending on how you cont cycles it’ll be either 1 cycle access or 4 cycle access latency.</p>
 <p>Lets use NES&trade; as another example. Depending on the region, MOS 6502 processor would have single-cycle access to memory at either 1.79MHz or 1.66MHz. The total size of memory was only 2KB but still – single cycle. Commodore&trade; 64? Sure, 64KB at 1 cycle access (it also has 6502). Apple&trade; II? 4KB-64KB at single cycle.</p>
 <p>As memory sizes started to grow, CPUs had to use caches, 4KB, 8KB, because it takes a lot of effort to make memory fast as its size increases. Internal latencies from decoder logic, access logic, dynamic logic pre-charge. Because physics. Therefore the memory closes to CPU was always within 8KB-64KB. Some systems took it to extreme: Sony&trade; PlayStation&trade; only had 1KB or fast RAM. What was originally a cache ended up being locked to a certain region. And people made GAMES for that platform. In fact, people have been making games for ALL OF THEM.</p>
-<p>That should give you a perspective of how bad modern programming practices are. Your computer or computer that you’re targeting with your software, regardless of its age, cost or manufacturer identity, always had, have now and will have 32KB of memory. Anything beyond that should be treated as a long-term storage. If your software needs more than 32KB – it a bad and inefficient software.</p>
+<p>That should give you a perspective of how bad modern programming practices are. Your computer or computer that you’re targeting with your software, regardless of its age, cost or manufacturer identity, always had, have now and will have 32KB of memory. Anything beyond that should be treated as a long-term storage. If your software needs more than 32KB to be present in memory at all times – it is a bad and inefficient software.</p>
 <p>The End.</p>
 <p>&trade;: Standard trademark disclaimer applies. Each have their owners and i’m not one of them.</p>
 
@@ -139,6 +139,8 @@
   <ul class="entry">
   
     <li><a href="/tags/cpu/">cpu</a><small>1</small></li>
+  
+    <li><a href="/tags/crypto/">crypto</a><small>0</small></li>
   
     <li><a href="/tags/retro/">retro</a><small>1</small></li>
   
