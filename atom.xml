@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Ntrf&#39;s blog</title>
+  <icon>http://ntrf.github.io/icon.png</icon>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://ntrf.github.io/"/>
+  <updated>2020-06-24T10:22:58.368Z</updated>
+  <id>http://ntrf.github.io/</id>
+  
+  <author>
+    <name>Anton Nesterov // Ntrf</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Is TLS small yet?</title>
+    <link href="http://ntrf.github.io/2020/06/24/is-tls-small-yet/"/>
+    <id>http://ntrf.github.io/2020/06/24/is-tls-small-yet/</id>
+    <published>2020-06-24T10:21:16.000Z</published>
+    <updated>2020-06-24T10:22:58.368Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;Ok, we all know that TLS is fast. At least that’s what one Google-related website is &lt;a href=&quot;https://istlsfastyet.com/&quot; target=&quot;_blank&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="libraries" scheme="http://ntrf.github.io/categories/libraries/"/>
+    
+    
+      <category term="crypto" scheme="http://ntrf.github.io/tags/crypto/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Your computer has 32KB of RAM</title>
+    <link href="http://ntrf.github.io/2020/06/23/32kb-of-ram/"/>
+    <id>http://ntrf.github.io/2020/06/23/32kb-of-ram/</id>
+    <published>2020-06-23T11:11:54.000Z</published>
+    <updated>2020-06-23T13:59:47.335Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;&lt;em&gt;“No, it’s not!”&lt;/em&gt;, you might argue.&lt;/p&gt;
+&lt;p&gt;Fine, those DDR4 DIMM slots of yours are probably full of high-speed low-drag memory
+        
+      
+    
+    </summary>
+    
+    
+      <category term="rant" scheme="http://ntrf.github.io/categories/rant/"/>
+    
+    
+      <category term="retro" scheme="http://ntrf.github.io/tags/retro/"/>
+    
+      <category term="cpu" scheme="http://ntrf.github.io/tags/cpu/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>I finally decided to fly</title>
+    <link href="http://ntrf.github.io/2018/08/01/i-finally-decided-to-fly/"/>
+    <id>http://ntrf.github.io/2018/08/01/i-finally-decided-to-fly/</id>
+    <published>2018-08-01T10:00:59.833Z</published>
+    <updated>2020-06-23T11:08:05.387Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;After all these years i finally decided to start my own blog. Took me long enough. Surprisingly, i can do this for free. Maybe it’ll
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+</feed>
