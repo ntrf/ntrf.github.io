@@ -162,14 +162,11 @@ article .top-border {
 }
 article .post-content {
   background: #fff;
-  padding: 20px 20px 15px 77px;
   margin-bottom: 50px;
   position: relative;
 }
-@media screen and (max-width: 600px) {
-  article .post-content {
-    padding-left: 20px;
-  }
+article .post-content > * {
+  padding: 20px;
 }
 article .gallery {
   overflow: hidden;
@@ -232,6 +229,9 @@ article .gallery .next {
 article .gallery .next:before {
   content: '\f054';
   right: 10px;
+}
+article header.shaded {
+  background-color: rgba(192,128,255,0.3);
 }
 article header .icon {
   width: 32px;
