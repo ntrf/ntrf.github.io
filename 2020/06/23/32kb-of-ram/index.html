@@ -56,6 +56,7 @@
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
     <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="top-border"></div>
   
     <div class="gallery">
   <div class="photoset">
@@ -83,12 +84,12 @@
     </header>
     <div class="entry">
       
-        <p><em>“No, it’s not!”</em>, you might argue.</p>
+        <p>*”No, it’s not!”*, you might argue.</p>
 <p>Fine, those DDR4 DIMM slots of yours are probably full of high-speed low-drag memory chips. Or maybe you have latest and greatest and applest laptop and all of those chips are soldered onto the motherboard. And look at the amount: 16GB, 32GB, 64GB, oh my. That’s so much memory. Clearly bigger, than 32KB.</p>
 <p>So let me clarify:</p>
 <p><strong>Over the last 40 years the average size of memory, accessible from CPU within 4 cycles, has always been 32KB.</strong></p>
 <p>Yes, your computer might have memory, capable of storing 16GB worth of moving pictures, while you edit them, but only a fraction of that data is available to CPU without much delay. That’s what L1 cache is for (sometimes there is also L0 cache, but i think L0 is a store buffer, which is bit different). Anytime you access data beyond size of your L1 cache, you’re waiting for it. In most cases compilers, out-of-order execution units inside CPU and thread schedulers can’t optimize away delay of L2 request, which could be on a scale of 10-50 cycles. Main memory is even slower. Also L2 is typically physically indexed, which means that there will be an additional TLB translation delay or even pagetable load if virtual memory is in use. Some modern CPUs offer memory encryption, which further increases main memory.</p>
-<p><em>“But main memory is not slow, it’s ~16GB/s.”</em> </p>
+<p>*”But main memory is not slow, it’s ~16GB/s.”* </p>
 <p>True, but that’s throughput, not latency. It’s still not accessible within 4 cycles. A typical DDR4 PC4-12800 memory has clock speed of 800MHz with 14ns CAS latency (11-11-11 “timings”). That means it’ll take ~25 cycles (on avg.) to access our data, which gives us ~31.25ns access time or 1 cycle at ~32MHz. You CPU my be 3.2GHz, so it’s 100x faster than memory. It’s probably going to take more time for memory to reach individual CPU in multicore system as multiple buffers, busses and crossbars will propagate it from DDR4 interface, so we can effectively multiply it by 2.</p>
 <p>If we go back in time and look at what was available 35-40 years ago, you’ll see that things didn’t change that much. I’m going to use ZX Spectrum&trade; 48 as an example. It had 16KB to 48KB of memory and all mof it was available in one cycle. Well almost, Z80&trade; CPU works in 4 clock units, during the first two cycles it fetches instructions and then it executes them. So effectively 1 CPU cycle = 4 clock cycles. Memory was running as 2x speed, serving both the CPU and a simple DMA for video generation. Clock speed was ~1.75MHz for memory and twice as low for CPU (oh those weird old days of CPUs being slower than memory). Depending on how you cont cycles it’ll be either 1 cycle access or 4 cycle access latency.</p>
 <p>Lets use NES&trade; as another example. Depending on the region, MOS 6502 processor would have single-cycle access to memory at either 1.79MHz or 1.66MHz. The total size of memory was only 2KB but still – single cycle. Commodore&trade; 64? Sure, 64KB at 1 cycle access (it also has 6502). Apple&trade; II? 4KB-64KB at single cycle.</p>
@@ -187,7 +188,7 @@
   Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
 </div>
 <div class="clearfix"></div></footer>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="/js/jquery-3.5.1.min.js"></script>
 <script src="/js/jquery.imagesloaded.min.js"></script>
 <script src="/js/gallery.js"></script>
 

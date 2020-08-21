@@ -56,6 +56,7 @@
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
     <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  <div class="top-border"></div>
   
     <div class="gallery">
   <div class="photoset">
@@ -108,7 +109,7 @@
 <h2 id="There-are-limits"><a href="#There-are-limits" class="headerlink" title="There are limits"></a>There are limits</h2><p>While i was able to trim down the size of executable, tinyTLS still required a lot of dynamic RAM allocations (heap allocations). In fact most of the libraries do. I remember some other library (i can’t remember which one) claiming that they only use 6KB of RAM and therefore suitable for MCU applications. As a “proof” they’ve published linker <code>.map</code> file, in which you could have clearly seen that it does in fact use 6KB of RAM and it also links file with suspicious name <code>ucalloc.c</code>.</p>
 <p>In practice there is a limit on how much memory you need. In order to receive, decrypt and verify packets you need at least 16K + 1024 bytes. That’s what <a href="https://tools.ietf.org/html/rfc5246#section-6.2.2" target="_blank" rel="noopener">standard dictates</a> as a maximum size of a fragment. All fragment processing has to be atomic, so you can’t decrypt part of the fragment and return it to application, because you can’t authenticate it properly.</p>
 <p>The other problem is fragmentation. TLS effectively has 4 independent byte-oriented streams of data: CCS, alert, handshake and application. We don’t have any structured data on the last one, so we can return it in whatever fragments we like. The first one is also easy – any time you receive a non-empty fragment, you change ciphers. With alert it’s kinda difficult, as you have to interpret incoming bytes in pairs. In fact there was a recent discovery of an OpenSSL bug, which allows an attacker to inject byte string <code>21:03:03:00:01:01</code> into TCP steam right before <code>ServerHello</code> and OpenSSL will remember <code>01</code> as an alert byte and keep it around until real alert arrives, in which case it will convert any fatal alert into warning and keep connection open. In my implementation i didn’t bother with that and i always treat alert fragments of less that 2 bytes as a protocol error, and it does seem safer that way.</p>
-<p>The worst part is handshake, which has it’s own independent framing inside of TLS fragments. Handshake messages are not aligned with fragments at all. Say you need to receive a certificate and for some valid reasons server is sending it to you in fragments. You need to check previous fragment you’ve received for handshake header (which may be partial btw), get the size of the entire handshake message, allocate memory for it and then receive each fragment, constantly copying data from crypto buffer to handshake message buffer. Now imagine doing the same without memory allocations. Even if handshake messages had their framing aligned with fragments, it would’ve made things much easier. And don’t forget that the original framing of TLS is sent in TCP framing, so we get framing within framing within framing. *<em>sigh</em>* </p>
+<p>The worst part is handshake, which has it’s own independent framing inside of TLS fragments. Handshake messages are not aligned with fragments at all. Say you need to receive a certificate and for some valid reasons server is sending it to you in fragments. You need to check previous fragment you’ve received for handshake header (which may be partial btw), get the size of the entire handshake message, allocate memory for it and then receive each fragment, constantly copying data from crypto buffer to handshake message buffer. Now imagine doing the same without memory allocations. Even if handshake messages had their framing aligned with fragments, it would’ve made things much easier. And don’t forget that the original framing of TLS is sent in TCP framing, so we get framing within framing within framing. *<em>sigh*\</em> </p>
 <h2 id="Any-good-news"><a href="#Any-good-news" class="headerlink" title="Any good news?"></a>Any good news?</h2><p>At some point someone had a good idea to allow implementations to reduce the fragment size, because TLS was out-of-reach for embedded systems. A typical MCU has about 16KB to begin with and that needs to hold some useful data first, leaving only a little bit available to TLS. That became <a href="https://tools.ietf.org/html/rfc6066#section-4" target="_blank" rel="noopener">RFC6066 sect. 4</a> and later updated with <a href="https://tools.ietf.org/html/rfc8849" target="_blank" rel="noopener">RFC8449</a>. This extension alone allows us to implement TLS with less memory. For my implementation i’ve chosen 512 bytes – not too small, because of the overhead of MAC and not too large to explode the buffer. But we still need to store handshake messages and there is no way to constraint them.</p>
 <p>When we’re sending messages, we can fragment them as much as we want, so we can safely assume 512 bytes + 64 bytes of MAC, padding, IV and gap between messages will be available to us, which is much less than what standard requires. 512 bytes is typically enough for a small-scale REST query and you can use blocking socket api to fragment larger messages.</p>
 <p>We can store handshake messages in a combined buffer, because both client and server should be taking turns anyway. Most of the handshake messages will be less then 512 bytes, leaving us in the worst case scenario with 2 fragments present simultaneously. The one exception is a Certificate message. More on that later.</p>
@@ -129,8 +130,7 @@
 <th>3KB</th>
 </tr>
 </thead>
-<tbody>
-<tr>
+<tbody><tr>
 <td>localhost Nginx</td>
 <td>ok</td>
 <td>ok</td>
@@ -170,8 +170,7 @@
 <td>ok</td>
 <td>mem</td>
 </tr>
-</tbody>
-</table>
+</tbody></table>
 <p><em>mem = ZTLS_ERR_OVERFLOW, out of memory error</em> </p>
 <p>4KB worked just fine. 3KB did not … pretty much anywhere. Application protocol was not an issue.</p>
 <p>The main issue was to fit <code>Certificate</code> message during the handshake. I’ve managed to receive certificates incrementally, so i didn’t have to fit all the certificates, but only one of them. Keeping an entire certificate in memory later is not an option, but i need to store them. One of the problems that surfaced during development of tinyTLS was the fact that many websites have their certificates in the wrong order. This is clearly against the specification, but there is a lot of stuff against the specification in the wild. As a solution i’ve extracted a public key, a signature, key identifiers, some constraints and a hash of the entire certificate as a separate structure. This way instead of storing 1.5KB certificate i only get to store ~760 bytes. That wasn’t enough. At some point memory will contain some context state variables, running hash of handshake messages (for <code>Finished</code>), session id, random values from <code>Client</code>/<code>ServerHello</code>, received certificate and data from previous certificates. An attempt to allocate memory for a new extracted certificate data would fail and the entire handshake had to be aborted.</p>
@@ -275,7 +274,7 @@
   Powered by <a href="https://hexo.io" target="_blank">Hexo</a>
 </div>
 <div class="clearfix"></div></footer>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="/js/jquery-3.5.1.min.js"></script>
 <script src="/js/jquery.imagesloaded.min.js"></script>
 <script src="/js/gallery.js"></script>
 
