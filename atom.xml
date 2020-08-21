@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ntrf.github.io/"/>
-  <updated>2020-06-24T10:22:58.368Z</updated>
+  <updated>2020-08-21T12:09:04.776Z</updated>
   <id>http://ntrf.github.io/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>HxCPP wrappers without C++</title>
+    <link href="http://ntrf.github.io/2020/08/21/hxcpp-wrappers-without-cpp/"/>
+    <id>http://ntrf.github.io/2020/08/21/hxcpp-wrappers-without-cpp/</id>
+    <published>2020-08-21T12:09:04.000Z</published>
+    <updated>2020-08-21T12:09:04.776Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;I like using &lt;a href=&quot;https://haxe.org&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Haxe&lt;/a&gt;. It’s a modern language with type inference, GC and a
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="programming" scheme="http://ntrf.github.io/tags/programming/"/>
+    
+      <category term="haxe" scheme="http://ntrf.github.io/tags/haxe/"/>
+    
+      <category term="c++" scheme="http://ntrf.github.io/tags/c/"/>
+    
+  </entry>
   
   <entry>
     <title>Is TLS small yet?</title>

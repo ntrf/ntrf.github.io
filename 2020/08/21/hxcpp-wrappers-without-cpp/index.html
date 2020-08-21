@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Ntrf&#39;s blog</title>
+  <title>HxCPP wrappers without C++ | Ntrf&#39;s blog</title>
   <meta name="author" content="Anton Nesterov // Ntrf">
   
   <meta name="description" content="This place is used by Ntrf to increase his self-esteem (and learn to write in english without typos)">
@@ -11,7 +11,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="HxCPP wrappers without C++"/>
   <meta property="og:site_name" content="Ntrf&#39;s blog"/>
 
   
@@ -50,8 +50,7 @@
 </nav>
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-  <article class="post">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
   
     <div class="gallery">
   <div class="photoset">
@@ -73,7 +72,7 @@
       
       
   
-    <h1 class="title"><a href="/2020/08/21/hxcpp-wrappers-without-cpp/">HxCPP wrappers without C++</a></h1>
+    <h1 class="title">HxCPP wrappers without C++</h1>
   
 
     </header>
@@ -216,272 +215,25 @@
       
         
         
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
   
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
+  <div class="tags">
+    <a href="/tags/programming/">programming</a>, <a href="/tags/haxe/">haxe</a>, <a href="/tags/c/">c++</a>
   </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
+
+        <div class="share_row">
+  <div>Share on:</div>
+  <a href="https://facebook.com/sharer/sharer.php?u&#x3D;http://ntrf.github.io/2020/08/21/hxcpp-wrappers-without-cpp/" title="Share on Facebook">
+    <img alt="Facebook logo" src="/img/fb.svg" style="height:16pt;width:16pt;" />
+  </a>
 </div>
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2020-06-24T10:21:16.000Z"><a href="/2020/06/24/is-tls-small-yet/">2020-06-24</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2020/06/24/is-tls-small-yet/">Is TLS small yet?</a></h1>
-  
 
-    </header>
-    <div class="entry">
-      
-        <p>Ok, we all know that TLS is fast. At least that’s what one Google-related website is <a href="https://istlsfastyet.com/" target="_blank" rel="noopener">trying to convince us with</a>. While they focus on big servers and big browsers to live happily together, what about smaller ones? What about mobile games, that want to interact with social network API, or x-duinos and x-pies? Is it possible to shrink TLS down to something useable with all of this big infrastructure? Besides, i believe, that software should fit <a href="/2020/06/23/32kb-of-ram">it’s useful data into 32KB</a> and TLS is just a transport.</p>
-<h2 id="tinyTLS"><a href="#tinyTLS" class="headerlink" title="tinyTLS"></a>tinyTLS</h2><p>Back in 2014 i needed a TLS/HTTPS library. Realizing that:</p>
-<ul>
-<li>OpenSSL is HUGE and full of bugs,</li>
-<li>Same with NSS but with less bugs,</li>
-<li>System-provided API likes to enforce their <a href="https://developer.apple.com/documentation/security/preventing_insecure_network_connections" target="_blank" rel="noopener">own will</a>,</li>
-<li>other SSL libraries try to copy OpenSSL, while being commercial,</li>
-</ul>
-<p>i decided that there is no hope and i just have to do it myself.</p>
-<p><em>Note: Most commercial TLS libraries offer GPL licenses, but that’s not practical for mobile software. The fact that commercial software is using OSS license (GPL really) just to slap “We’re Open-Source” on their landing page is a topic for another day.</em></p>
-<p>And the result is <a href="https://github.com/ntrf/tinytls" target="_blank" rel="noopener">tinyTLS</a>. As we were using it in a game to make occasional REST queries to server, performance didn’t matter that much, as network would be slower anyway. But we wanted to use off-the-shelf server software, so no PSK modes and other weird stuff. I did in fact implement client certificates, but never used them, because it wasn’t possible to store them securely within the game.</p>
-<p>tinyTLS implements TLS 1.0 <a href="https://tools.ietf.org/html/rfc2246" target="_blank" rel="noopener">RFC2246</a>. It’s only a client side library, so it can have only a minimum set of required stuff. Here is a list of things i had to include:</p>
-<ul>
-<li>AES128</li>
-<li>MD5, SHA1, SHA2-256, SHA2-384, SHA2-512</li>
-<li>HMAC-MD5, HMAC-SHA1</li>
-<li>Big integer modular exponentiation</li>
-<li>RSA Encryption, RSA Signature verification</li>
-<li>RSA Signing, but that’s optional for client certificate support</li>
-</ul>
-<p>Notice, i have not implemented RSA Decryption – it’s only required on server. Also i’ve skipped SHA2-224, because nobody uses that. Other versions of SHA2 are used for certificate signature verification.</p>
-<p>The only cipher suite implemented was <code>TLS_RSA_WITH_AES128_CBC_SHA</code>. Fast forward 5 years and now we can drop MD5 and HMAC-MD5, which is no longer used in handshake of TLS 1.2.</p>
-<h2 id="There-are-limits"><a href="#There-are-limits" class="headerlink" title="There are limits"></a>There are limits</h2><p>While i was able to trim down the size of executable, tinyTLS still required a lot of dynamic RAM allocations (heap allocations). In fact most of the libraries do. I remember some other library (i can’t remember which one) claiming that they only use 6KB of RAM and therefore suitable for MCU applications. As a “proof” they’ve published linker <code>.map</code> file, in which you could have clearly seen that it does in fact use 6KB of RAM and it also links file with suspicious name <code>ucalloc.c</code>.</p>
-<p>In practice there is a limit on how much memory you need. In order to receive, decrypt and verify packets you need at least 16K + 1024 bytes. That’s what <a href="https://tools.ietf.org/html/rfc5246#section-6.2.2" target="_blank" rel="noopener">standard dictates</a> as a maximum size of a fragment. All fragment processing has to be atomic, so you can’t decrypt part of the fragment and return it to application, because you can’t authenticate it properly.</p>
-<p>The other problem is fragmentation. TLS effectively has 4 independent byte-oriented streams of data: CCS, alert, handshake and application. We don’t have any structured data on the last one, so we can return it in whatever fragments we like. The first one is also easy – any time you receive a non-empty fragment, you change ciphers. With alert it’s kinda difficult, as you have to interpret incoming bytes in pairs. In fact there was a recent discovery of an OpenSSL bug, which allows an attacker to inject byte string <code>21:03:03:00:01:01</code> into TCP steam right before <code>ServerHello</code> and OpenSSL will remember <code>01</code> as an alert byte and keep it around until real alert arrives, in which case it will convert any fatal alert into warning and keep connection open. In my implementation i didn’t bother with that and i always treat alert fragments of less that 2 bytes as a protocol error, and it does seem safer that way.</p>
-<p>The worst part is handshake, which has it’s own independent framing inside of TLS fragments. Handshake messages are not aligned with fragments at all. Say you need to receive a certificate and for some valid reasons server is sending it to you in fragments. You need to check previous fragment you’ve received for handshake header (which may be partial btw), get the size of the entire handshake message, allocate memory for it and then receive each fragment, constantly copying data from crypto buffer to handshake message buffer. Now imagine doing the same without memory allocations. Even if handshake messages had their framing aligned with fragments, it would’ve made things much easier. And don’t forget that the original framing of TLS is sent in TCP framing, so we get framing within framing within framing. *<em>sigh</em>* </p>
-<h2 id="Any-good-news"><a href="#Any-good-news" class="headerlink" title="Any good news?"></a>Any good news?</h2><p>At some point someone had a good idea to allow implementations to reduce the fragment size, because TLS was out-of-reach for embedded systems. A typical MCU has about 16KB to begin with and that needs to hold some useful data first, leaving only a little bit available to TLS. That became <a href="https://tools.ietf.org/html/rfc6066#section-4" target="_blank" rel="noopener">RFC6066 sect. 4</a> and later updated with <a href="https://tools.ietf.org/html/rfc8849" target="_blank" rel="noopener">RFC8449</a>. This extension alone allows us to implement TLS with less memory. For my implementation i’ve chosen 512 bytes – not too small, because of the overhead of MAC and not too large to explode the buffer. But we still need to store handshake messages and there is no way to constraint them.</p>
-<p>When we’re sending messages, we can fragment them as much as we want, so we can safely assume 512 bytes + 64 bytes of MAC, padding, IV and gap between messages will be available to us, which is much less than what standard requires. 512 bytes is typically enough for a small-scale REST query and you can use blocking socket api to fragment larger messages.</p>
-<p>We can store handshake messages in a combined buffer, because both client and server should be taking turns anyway. Most of the handshake messages will be less then 512 bytes, leaving us in the worst case scenario with 2 fragments present simultaneously. The one exception is a Certificate message. More on that later.</p>
-<p>So in theory, if you manage to compress all of the state well enough, you can get away with just 1KB + some state for encryption algorithms and padding. Well … that’s theory.</p>
-<h2 id="Enter-zeroTLS"><a href="#Enter-zeroTLS" class="headerlink" title="Enter zeroTLS"></a>Enter zeroTLS</h2><p>I took spare parts from tinyTLS, most notably most of the crypto and made <a href="https://github.com/ntrf/zerotls" target="_blank" rel="noopener">zeroTLS</a>. This time an entire context is placed into one continuous block of memory. If you can guarantee that it’s always aligned to 16 bytes, it cen even be moveable. That makes integration with GC languages exceptionally easy – just allocate an array of <code>Simd.Vec4</code> or whatever and you’re done.</p>
-<p>Bu that was not the point. The point was to figure out how much memory some of the popular websites need. If we can fit within 6KB, it’s good enough, but if we can go lower than 4KB, that would be prefect.</p>
-<p>I’ve stated with a local nginx install with self-signed certificate. That way i won’t wake up some site admins in the night with some strange OpenSSL warnings in the log. Fortunately modern versions on nginx have support for both RFC6066 and RFC8449.</p>
-<p>After i’ve been confident about the results, i let it loose and tried to fetch <code>/robots.txt</code> from some internet hosts.</p>
-<h2 id="Results"><a href="#Results" class="headerlink" title="Results"></a>Results</h2><p><a href="https://github.com/ntrf/zerotls/wiki/Memory-Usage-Tests#22-06-2020" target="_blank" rel="noopener">Published on a separate page</a>.</p>
-<table>
-<thead>
-<tr>
-<th>hostname</th>
-<th>24KB</th>
-<th>12KB</th>
-<th>6KB</th>
-<th>4KB</th>
-<th>3KB</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>localhost Nginx</td>
-<td>ok</td>
-<td>ok</td>
-<td>ok</td>
-<td>ok</td>
-<td>ok</td>
-</tr>
-<tr>
-<td>example.com</td>
-<td>ok</td>
-<td>ok</td>
-<td>ok</td>
-<td>ok</td>
-<td>mem</td>
-</tr>
-<tr>
-<td>api.github.com</td>
-<td>ok</td>
-<td>ok</td>
-<td>ok</td>
-<td>ok</td>
-<td>mem</td>
-</tr>
-<tr>
-<td>google.com</td>
-<td>ok</td>
-<td>ok</td>
-<td>ok</td>
-<td>ok</td>
-<td>mem</td>
-</tr>
-<tr>
-<td>api.digitalocean.com</td>
-<td>ok</td>
-<td>ok</td>
-<td>ok</td>
-<td>ok</td>
-<td>mem</td>
-</tr>
-</tbody>
-</table>
-<p><em>mem = ZTLS_ERR_OVERFLOW, out of memory error</em> </p>
-<p>4KB worked just fine. 3KB did not … pretty much anywhere. Application protocol was not an issue.</p>
-<p>The main issue was to fit <code>Certificate</code> message during the handshake. I’ve managed to receive certificates incrementally, so i didn’t have to fit all the certificates, but only one of them. Keeping an entire certificate in memory later is not an option, but i need to store them. One of the problems that surfaced during development of tinyTLS was the fact that many websites have their certificates in the wrong order. This is clearly against the specification, but there is a lot of stuff against the specification in the wild. As a solution i’ve extracted a public key, a signature, key identifiers, some constraints and a hash of the entire certificate as a separate structure. This way instead of storing 1.5KB certificate i only get to store ~760 bytes. That wasn’t enough. At some point memory will contain some context state variables, running hash of handshake messages (for <code>Finished</code>), session id, random values from <code>Client</code>/<code>ServerHello</code>, received certificate and data from previous certificates. An attempt to allocate memory for a new extracted certificate data would fail and the entire handshake had to be aborted.</p>
-<p>Local Nginx did not exhibit this problem with 3KB of memory, because it only has one self-signed certificate. Github was very close, with only about 180 bytes short.</p>
-<h2 id="So-is-it-4KB-then"><a href="#So-is-it-4KB-then" class="headerlink" title="So is it 4KB then?"></a>So is it 4KB then?</h2><p>There is not much you can do to reduce memory usage, unfortunately. Parsing certificates on-the-fly is not an option as you need to compute a hash of the signed part, but you don’t get to know the algorithm before the end of signed part. Computing several hash algorithms at once does not sound like a good idea and will require even more memory. The only part then, that can be left behind is the signature itself, which only takes about 20% of the certificate. Once can hope to verify certificates on-the-fly one after the other, assuming that server does in fact comply with an RFC. However, that not as easy as it sounds, because you need to keep public key from the top certificate (you need it later in the handshake), signature of the previous certificate and currently received certificate, which is still about 2KB, but now you also need some space to store big integers. The advantage of doing it after-the-fact is that you can use space previously occupied by the received certificate.</p>
-<p>What would definitely help is smaller certificates. ECDSA certificates would make a huge difference, but until we see wider adoption of ECDSA by intermediate CAs, that not going to make much difference. Certificate compression (draft RFC) wouldn’t help as you’ll have to decompress them somewhere. </p>
-<p>BTW: Google’s Certificate Transparency timestamp, which is now included into every certificate doesn’t help with the size either. It’s especially concerning, since it does not add anything to security if client does not have public keys for a particular certificate list. Currently there are 17 of these lists and bundling all of those keys is not an option.</p>
-<p>What i think i’ll do in zeroTLS is introduce an additional handshake buffer, which is only going to be available for handshake data and can be returned to the application afterwards. This can make renegotiation implementation difficult, but i’m not if it’s even needed at this point.</p>
-<p>There is a slight chance that TLS 1.3 needs less memory, but i doubt that. If anything it looks to be more complex, not less.</p>
-<p>Until then, I can get to 4KB, but no further.</p>
-<p>P.S.: Google does not support changing fragment size and they <a href="https://hpbn.co/transport-layer-security-tls/#optimize-tls-record-size" target="_blank" rel="noopener">claim it’s necessary for performance</a>. Their idea of TLS performance is to allow server to choose TLS fragment size freely depending on network capabilities. Fortunately they use 1400 bytes fragment size by default, so in theory it can still work with 3KB. If only certificates were small enough.</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
       
       <div class="clearfix"></div>
     </footer>
   </div>
 </article>
 
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2020-06-23T11:11:54.000Z"><a href="/2020/06/23/32kb-of-ram/">2020-06-23</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2020/06/23/32kb-of-ram/">Your computer has 32KB of RAM</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p><em>“No, it’s not!”</em>, you might argue.</p>
-<p>Fine, those DDR4 DIMM slots of yours are probably full of high-speed low-drag memory chips. Or maybe you have latest and greatest and applest laptop and all of those chips are soldered onto the motherboard. And look at the amount: 16GB, 32GB, 64GB, oh my. That’s so much memory. Clearly bigger, than 32KB.</p>
-<p>So let me clarify:</p>
-<p><strong>Over the last 40 years the average size of memory, accessible from CPU within 4 cycles, has always been 32KB.</strong></p>
-<p>Yes, your computer might have memory, capable of storing 16GB worth of moving pictures, while you edit them, but only a fraction of that data is available to CPU without much delay. That’s what L1 cache is for (sometimes there is also L0 cache, but i think L0 is a store buffer, which is bit different). Anytime you access data beyond size of your L1 cache, you’re waiting for it. In most cases compilers, out-of-order execution units inside CPU and thread schedulers can’t optimize away delay of L2 request, which could be on a scale of 10-50 cycles. Main memory is even slower. Also L2 is typically physically indexed, which means that there will be an additional TLB translation delay or even pagetable load if virtual memory is in use. Some modern CPUs offer memory encryption, which further increases main memory.</p>
-<p><em>“But main memory is not slow, it’s ~16GB/s.”</em> </p>
-<p>True, but that’s throughput, not latency. It’s still not accessible within 4 cycles. A typical DDR4 PC4-12800 memory has clock speed of 800MHz with 14ns CAS latency (11-11-11 “timings”). That means it’ll take ~25 cycles (on avg.) to access our data, which gives us ~31.25ns access time or 1 cycle at ~32MHz. You CPU my be 3.2GHz, so it’s 100x faster than memory. It’s probably going to take more time for memory to reach individual CPU in multicore system as multiple buffers, busses and crossbars will propagate it from DDR4 interface, so we can effectively multiply it by 2.</p>
-<p>If we go back in time and look at what was available 35-40 years ago, you’ll see that things didn’t change that much. I’m going to use ZX Spectrum&trade; 48 as an example. It had 16KB to 48KB of memory and all mof it was available in one cycle. Well almost, Z80&trade; CPU works in 4 clock units, during the first two cycles it fetches instructions and then it executes them. So effectively 1 CPU cycle = 4 clock cycles. Memory was running as 2x speed, serving both the CPU and a simple DMA for video generation. Clock speed was ~1.75MHz for memory and twice as low for CPU (oh those weird old days of CPUs being slower than memory). Depending on how you cont cycles it’ll be either 1 cycle access or 4 cycle access latency.</p>
-<p>Lets use NES&trade; as another example. Depending on the region, MOS 6502 processor would have single-cycle access to memory at either 1.79MHz or 1.66MHz. The total size of memory was only 2KB but still – single cycle. Commodore&trade; 64? Sure, 64KB at 1 cycle access (it also has 6502). Apple&trade; II? 4KB-64KB at single cycle.</p>
-<p>As memory sizes started to grow, CPUs had to use caches, 4KB, 8KB, because it takes a lot of effort to make memory fast as its size increases. Internal latencies from decoder logic, access logic, dynamic logic pre-charge. Because physics. Therefore the memory closes to CPU was always within 8KB-64KB. Some systems took it to extreme: Sony&trade; PlayStation&trade; only had 1KB or fast RAM. What was originally a cache ended up being locked to a certain region. And people made GAMES for that platform. In fact, people have been making games for ALL OF THEM.</p>
-<p>That should give you a perspective of how bad modern programming practices are. Your computer or computer that you’re targeting with your software, regardless of its age, cost or manufacturer identity, always had, have now and will have 32KB of memory. Anything beyond that should be treated as a long-term storage. If your software needs more than 32KB to be present in memory at all times – it is a bad and inefficient software.</p>
-<p>The End.</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-  <article class="post">
-  
-    <div class="gallery">
-  <div class="photoset">
-    
-      <img src="">
-    
-  </div>
-  <div class="control">
-    <div class="prev"></div>
-    <div class="next"></div>
-  </div>
-</div>
-  
-  <div class="post-content">
-    <header>
-      
-        <div class="icon"></div>
-        <time datetime="2018-08-01T10:00:59.833Z"><a href="/2018/08/01/i-finally-decided-to-fly/">2018-08-01</a></time>
-      
-      
-  
-    <h1 class="title"><a href="/2018/08/01/i-finally-decided-to-fly/">I finally decided to fly</a></h1>
-  
-
-    </header>
-    <div class="entry">
-      
-        <p>After all these years i finally decided to start my own blog. Took me long enough. Surprisingly, i can do this for free. Maybe it’ll help me become popular … Nah, who am i kidding.</p>
-<p>Topics i will be covering (in order of preference … sorta):</p>
-<ul>
-<li>game engines</li>
-<li>network protocols</li>
-<li>crypto and security</li>
-<li>disasters of my personal life (hopefully not)</li>
-<li>anything else i think worth mentioning (esp. when i’m drunk)</li>
-</ul>
-<p>Anyway, there’s still a lot of stuff i need to configure in order to bring this blog up to speed.</p>
-<p>Back to work.</p>
-
-      
-    </div>
-    <footer>
-      
-        
-        
-      
-      <div class="clearfix"></div>
-    </footer>
-  </div>
-</article>
-
-
-
-
-<nav id="pagination">
-  
-  
-  <div class="clearfix"></div>
-</nav></div></div>
+</div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">
   <form action="//google.com/search" method="get" accept-charset="utf-8">

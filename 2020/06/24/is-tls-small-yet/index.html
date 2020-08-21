@@ -78,18 +78,18 @@
     </header>
     <div class="entry">
       
-        <p>Ok, we all know that TLS is fast. At least that’s what one Google-related website is <a href="https://istlsfastyet.com/" target="_blank" rel="noopener external nofollow noreferrer">trying to convince us with</a>. While they focus on big servers and big browsers to live happily together, what about smaller ones? What about mobile games, that want to interact with social network API, or x-duinos and x-pies? Is it possible to shrink TLS down to something useable with all of this big infrastructure? Besides, i believe, that software should fit <a href="/2020/06/23/32kb-of-ram">it’s useful data into 32KB</a> and TLS is just a transport.</p>
+        <p>Ok, we all know that TLS is fast. At least that’s what one Google-related website is <a href="https://istlsfastyet.com/" target="_blank" rel="noopener">trying to convince us with</a>. While they focus on big servers and big browsers to live happily together, what about smaller ones? What about mobile games, that want to interact with social network API, or x-duinos and x-pies? Is it possible to shrink TLS down to something useable with all of this big infrastructure? Besides, i believe, that software should fit <a href="/2020/06/23/32kb-of-ram">it’s useful data into 32KB</a> and TLS is just a transport.</p>
 <h2 id="tinyTLS"><a href="#tinyTLS" class="headerlink" title="tinyTLS"></a>tinyTLS</h2><p>Back in 2014 i needed a TLS/HTTPS library. Realizing that:</p>
 <ul>
 <li>OpenSSL is HUGE and full of bugs,</li>
 <li>Same with NSS but with less bugs,</li>
-<li>System-provided API likes to enforce their <a href="https://developer.apple.com/documentation/security/preventing_insecure_network_connections" target="_blank" rel="noopener external nofollow noreferrer">own will</a>,</li>
+<li>System-provided API likes to enforce their <a href="https://developer.apple.com/documentation/security/preventing_insecure_network_connections" target="_blank" rel="noopener">own will</a>,</li>
 <li>other SSL libraries try to copy OpenSSL, while being commercial,</li>
 </ul>
 <p>i decided that there is no hope and i just have to do it myself.</p>
 <p><em>Note: Most commercial TLS libraries offer GPL licenses, but that’s not practical for mobile software. The fact that commercial software is using OSS license (GPL really) just to slap “We’re Open-Source” on their landing page is a topic for another day.</em></p>
-<p>And the result is <a href="https://github.com/ntrf/tinytls" target="_blank" rel="noopener external nofollow noreferrer">tinyTLS</a>. As we were using it in a game to make occasional REST queries to server, performance didn’t matter that much, as network would be slower anyway. But we wanted to use off-the-shelf server software, so no PSK modes and other weird stuff. I did in fact implement client certificates, but never used them, because it wasn’t possible to store them securely within the game.</p>
-<p>tinyTLS implements TLS 1.0 <a href="https://tools.ietf.org/html/rfc2246" target="_blank" rel="noopener external nofollow noreferrer">RFC2246</a>. It’s only a client side library, so it can have only a minimum set of required stuff. Here is a list of things i had to include:</p>
+<p>And the result is <a href="https://github.com/ntrf/tinytls" target="_blank" rel="noopener">tinyTLS</a>. As we were using it in a game to make occasional REST queries to server, performance didn’t matter that much, as network would be slower anyway. But we wanted to use off-the-shelf server software, so no PSK modes and other weird stuff. I did in fact implement client certificates, but never used them, because it wasn’t possible to store them securely within the game.</p>
+<p>tinyTLS implements TLS 1.0 <a href="https://tools.ietf.org/html/rfc2246" target="_blank" rel="noopener">RFC2246</a>. It’s only a client side library, so it can have only a minimum set of required stuff. Here is a list of things i had to include:</p>
 <ul>
 <li>AES128</li>
 <li>MD5, SHA1, SHA2-256, SHA2-384, SHA2-512</li>
@@ -101,18 +101,18 @@
 <p>Notice, i have not implemented RSA Decryption – it’s only required on server. Also i’ve skipped SHA2-224, because nobody uses that. Other versions of SHA2 are used for certificate signature verification.</p>
 <p>The only cipher suite implemented was <code>TLS_RSA_WITH_AES128_CBC_SHA</code>. Fast forward 5 years and now we can drop MD5 and HMAC-MD5, which is no longer used in handshake of TLS 1.2.</p>
 <h2 id="There-are-limits"><a href="#There-are-limits" class="headerlink" title="There are limits"></a>There are limits</h2><p>While i was able to trim down the size of executable, tinyTLS still required a lot of dynamic RAM allocations (heap allocations). In fact most of the libraries do. I remember some other library (i can’t remember which one) claiming that they only use 6KB of RAM and therefore suitable for MCU applications. As a “proof” they’ve published linker <code>.map</code> file, in which you could have clearly seen that it does in fact use 6KB of RAM and it also links file with suspicious name <code>ucalloc.c</code>.</p>
-<p>In practice there is a limit on how much memory you need. In order to receive, decrypt and verify packets you need at least 16K + 1024 bytes. That’s what <a href="https://tools.ietf.org/html/rfc5246#section-6.2.2" target="_blank" rel="noopener external nofollow noreferrer">standard dictates</a> as a maximum size of a fragment. All fragment processing has to be atomic, so you can’t decrypt part of the fragment and return it to application, because you can’t authenticate it properly.</p>
+<p>In practice there is a limit on how much memory you need. In order to receive, decrypt and verify packets you need at least 16K + 1024 bytes. That’s what <a href="https://tools.ietf.org/html/rfc5246#section-6.2.2" target="_blank" rel="noopener">standard dictates</a> as a maximum size of a fragment. All fragment processing has to be atomic, so you can’t decrypt part of the fragment and return it to application, because you can’t authenticate it properly.</p>
 <p>The other problem is fragmentation. TLS effectively has 4 independent byte-oriented streams of data: CCS, alert, handshake and application. We don’t have any structured data on the last one, so we can return it in whatever fragments we like. The first one is also easy – any time you receive a non-empty fragment, you change ciphers. With alert it’s kinda difficult, as you have to interpret incoming bytes in pairs. In fact there was a recent discovery of an OpenSSL bug, which allows an attacker to inject byte string <code>21:03:03:00:01:01</code> into TCP steam right before <code>ServerHello</code> and OpenSSL will remember <code>01</code> as an alert byte and keep it around until real alert arrives, in which case it will convert any fatal alert into warning and keep connection open. In my implementation i didn’t bother with that and i always treat alert fragments of less that 2 bytes as a protocol error, and it does seem safer that way.</p>
 <p>The worst part is handshake, which has it’s own independent framing inside of TLS fragments. Handshake messages are not aligned with fragments at all. Say you need to receive a certificate and for some valid reasons server is sending it to you in fragments. You need to check previous fragment you’ve received for handshake header (which may be partial btw), get the size of the entire handshake message, allocate memory for it and then receive each fragment, constantly copying data from crypto buffer to handshake message buffer. Now imagine doing the same without memory allocations. Even if handshake messages had their framing aligned with fragments, it would’ve made things much easier. And don’t forget that the original framing of TLS is sent in TCP framing, so we get framing within framing within framing. *<em>sigh</em>* </p>
-<h2 id="Any-good-news"><a href="#Any-good-news" class="headerlink" title="Any good news?"></a>Any good news?</h2><p>At some point someone had a good idea to allow implementations to reduce the fragment size, because TLS was out-of-reach for embedded systems. A typical MCU has about 16KB to begin with and that needs to hold some useful data first, leaving only a little bit available to TLS. That became <a href="https://tools.ietf.org/html/rfc6066#section-4" target="_blank" rel="noopener external nofollow noreferrer">RFC6066 sect. 4</a> and later updated with <a href="https://tools.ietf.org/html/rfc8849" target="_blank" rel="noopener external nofollow noreferrer">RFC8449</a>. This extension alone allows us to implement TLS with less memory. For my implementation i’ve chosen 512 bytes – not too small, because of the overhead of MAC and not too large to explode the buffer. But we still need to store handshake messages and there is no way to constraint them.</p>
+<h2 id="Any-good-news"><a href="#Any-good-news" class="headerlink" title="Any good news?"></a>Any good news?</h2><p>At some point someone had a good idea to allow implementations to reduce the fragment size, because TLS was out-of-reach for embedded systems. A typical MCU has about 16KB to begin with and that needs to hold some useful data first, leaving only a little bit available to TLS. That became <a href="https://tools.ietf.org/html/rfc6066#section-4" target="_blank" rel="noopener">RFC6066 sect. 4</a> and later updated with <a href="https://tools.ietf.org/html/rfc8849" target="_blank" rel="noopener">RFC8449</a>. This extension alone allows us to implement TLS with less memory. For my implementation i’ve chosen 512 bytes – not too small, because of the overhead of MAC and not too large to explode the buffer. But we still need to store handshake messages and there is no way to constraint them.</p>
 <p>When we’re sending messages, we can fragment them as much as we want, so we can safely assume 512 bytes + 64 bytes of MAC, padding, IV and gap between messages will be available to us, which is much less than what standard requires. 512 bytes is typically enough for a small-scale REST query and you can use blocking socket api to fragment larger messages.</p>
 <p>We can store handshake messages in a combined buffer, because both client and server should be taking turns anyway. Most of the handshake messages will be less then 512 bytes, leaving us in the worst case scenario with 2 fragments present simultaneously. The one exception is a Certificate message. More on that later.</p>
 <p>So in theory, if you manage to compress all of the state well enough, you can get away with just 1KB + some state for encryption algorithms and padding. Well … that’s theory.</p>
-<h2 id="Enter-zeroTLS"><a href="#Enter-zeroTLS" class="headerlink" title="Enter zeroTLS"></a>Enter zeroTLS</h2><p>I took spare parts from tinyTLS, most notably most of the crypto and made <a href="https://github.com/ntrf/zerotls" target="_blank" rel="noopener external nofollow noreferrer">zeroTLS</a>. This time an entire context is placed into one continuous block of memory. If you can guarantee that it’s always aligned to 16 bytes, it cen even be moveable. That makes integration with GC languages exceptionally easy – just allocate an array of <code>Simd.Vec4</code> or whatever and you’re done.</p>
+<h2 id="Enter-zeroTLS"><a href="#Enter-zeroTLS" class="headerlink" title="Enter zeroTLS"></a>Enter zeroTLS</h2><p>I took spare parts from tinyTLS, most notably most of the crypto and made <a href="https://github.com/ntrf/zerotls" target="_blank" rel="noopener">zeroTLS</a>. This time an entire context is placed into one continuous block of memory. If you can guarantee that it’s always aligned to 16 bytes, it cen even be moveable. That makes integration with GC languages exceptionally easy – just allocate an array of <code>Simd.Vec4</code> or whatever and you’re done.</p>
 <p>Bu that was not the point. The point was to figure out how much memory some of the popular websites need. If we can fit within 6KB, it’s good enough, but if we can go lower than 4KB, that would be prefect.</p>
 <p>I’ve stated with a local nginx install with self-signed certificate. That way i won’t wake up some site admins in the night with some strange OpenSSL warnings in the log. Fortunately modern versions on nginx have support for both RFC6066 and RFC8449.</p>
 <p>After i’ve been confident about the results, i let it loose and tried to fetch <code>/robots.txt</code> from some internet hosts.</p>
-<h2 id="Results"><a href="#Results" class="headerlink" title="Results"></a>Results</h2><p><a href="https://github.com/ntrf/zerotls/wiki/Memory-Usage-Tests#22-06-2020" target="_blank" rel="noopener external nofollow noreferrer">Published on a separate page</a>.</p>
+<h2 id="Results"><a href="#Results" class="headerlink" title="Results"></a>Results</h2><p><a href="https://github.com/ntrf/zerotls/wiki/Memory-Usage-Tests#22-06-2020" target="_blank" rel="noopener">Published on a separate page</a>.</p>
 <table>
 <thead>
 <tr>
@@ -177,7 +177,7 @@
 <p>What i think i’ll do in zeroTLS is introduce an additional handshake buffer, which is only going to be available for handshake data and can be returned to the application afterwards. This can make renegotiation implementation difficult, but i’m not if it’s even needed at this point.</p>
 <p>There is a slight chance that TLS 1.3 needs less memory, but i doubt that. If anything it looks to be more complex, not less.</p>
 <p>Until then, I can get to 4KB, but no further.</p>
-<p>P.S.: Google does not support changing fragment size and they <a href="https://hpbn.co/transport-layer-security-tls/#optimize-tls-record-size" target="_blank" rel="noopener external nofollow noreferrer">claim it’s necessary for performance</a>. Their idea of TLS performance is to allow server to choose TLS fragment size freely depending on network capabilities. Fortunately they use 1400 bytes fragment size by default, so in theory it can still work with 3KB. If only certificates were small enough.</p>
+<p>P.S.: Google does not support changing fragment size and they <a href="https://hpbn.co/transport-layer-security-tls/#optimize-tls-record-size" target="_blank" rel="noopener">claim it’s necessary for performance</a>. Their idea of TLS performance is to allow server to choose TLS fragment size freely depending on network capabilities. Fortunately they use 1400 bytes fragment size by default, so in theory it can still work with 3KB. If only certificates were small enough.</p>
 
       
     </div>
@@ -235,19 +235,19 @@
   <h3 class="title">Tags</h3>
   <ul class="entry">
   
-    <li><a href="/tags/c/">c++</a><small>0</small></li>
+    <li><a href="/tags/c/">c++</a><small>1</small></li>
   
     <li><a href="/tags/cpu/">cpu</a><small>1</small></li>
   
     <li><a href="/tags/crypto/">crypto</a><small>1</small></li>
   
-    <li><a href="/tags/haxe/">haxe</a><small>0</small></li>
+    <li><a href="/tags/haxe/">haxe</a><small>1</small></li>
   
     <li><a href="/tags/linux/">linux</a><small>0</small></li>
   
     <li><a href="/tags/network/">network</a><small>0</small></li>
   
-    <li><a href="/tags/programming/">programming</a><small>0</small></li>
+    <li><a href="/tags/programming/">programming</a><small>1</small></li>
   
     <li><a href="/tags/retro/">retro</a><small>1</small></li>
   
