@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ntrf.github.io/"/>
-  <updated>2020-08-21T12:09:04.776Z</updated>
+  <updated>2020-08-21T12:17:44.811Z</updated>
   <id>http://ntrf.github.io/</id>
   
   <author>
@@ -21,17 +21,11 @@
     <link href="http://ntrf.github.io/2020/08/21/hxcpp-wrappers-without-cpp/"/>
     <id>http://ntrf.github.io/2020/08/21/hxcpp-wrappers-without-cpp/</id>
     <published>2020-08-21T12:09:04.000Z</published>
-    <updated>2020-08-21T12:09:04.776Z</updated>
+    <updated>2020-08-21T12:17:44.811Z</updated>
     
     <summary type="html">
     
-      
-      
-        
-        
-          &lt;p&gt;I like using &lt;a href=&quot;https://haxe.org&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Haxe&lt;/a&gt;. It’s a modern language with type inference, GC and a
-        
-      
+      It&#39;s possible to make HxCPP wrappers w/o writing C++ ... almost
     
     </summary>
     
