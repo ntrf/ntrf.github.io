@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Ntrf&#39;s blog</title>
-  <icon>http://ntrf.github.io/icon.png</icon>
+  <icon>https://ntrf.github.io/icon.png</icon>
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://ntrf.github.io/"/>
+  <link href="https://ntrf.github.io/"/>
   <updated>2020-08-21T13:06:59.122Z</updated>
-  <id>http://ntrf.github.io/</id>
+  <id>https://ntrf.github.io/</id>
   
   <author>
     <name>Anton Nesterov // Ntrf</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>HxCPP wrappers without C++</title>
-    <link href="http://ntrf.github.io/2020/08/21/hxcpp-wrappers-without-cpp/"/>
-    <id>http://ntrf.github.io/2020/08/21/hxcpp-wrappers-without-cpp/</id>
+    <link href="https://ntrf.github.io/2020/08/21/hxcpp-wrappers-without-cpp/"/>
+    <id>https://ntrf.github.io/2020/08/21/hxcpp-wrappers-without-cpp/</id>
     <published>2020-08-21T12:09:04.000Z</published>
     <updated>2020-08-21T13:06:59.122Z</updated>
     
@@ -31,18 +31,18 @@
     
     
     
-      <category term="programming" scheme="http://ntrf.github.io/tags/programming/"/>
+      <category term="programming" scheme="https://ntrf.github.io/tags/programming/"/>
     
-      <category term="haxe" scheme="http://ntrf.github.io/tags/haxe/"/>
+      <category term="haxe" scheme="https://ntrf.github.io/tags/haxe/"/>
     
-      <category term="c++" scheme="http://ntrf.github.io/tags/c/"/>
+      <category term="c++" scheme="https://ntrf.github.io/tags/c/"/>
     
   </entry>
   
   <entry>
     <title>Is TLS small yet?</title>
-    <link href="http://ntrf.github.io/2020/06/24/is-tls-small-yet/"/>
-    <id>http://ntrf.github.io/2020/06/24/is-tls-small-yet/</id>
+    <link href="https://ntrf.github.io/2020/06/24/is-tls-small-yet/"/>
+    <id>https://ntrf.github.io/2020/06/24/is-tls-small-yet/</id>
     <published>2020-06-24T10:21:16.000Z</published>
     <updated>2020-06-24T10:22:58.368Z</updated>
     
@@ -59,17 +59,17 @@
     </summary>
     
     
-      <category term="libraries" scheme="http://ntrf.github.io/categories/libraries/"/>
+      <category term="libraries" scheme="https://ntrf.github.io/categories/libraries/"/>
     
     
-      <category term="crypto" scheme="http://ntrf.github.io/tags/crypto/"/>
+      <category term="crypto" scheme="https://ntrf.github.io/tags/crypto/"/>
     
   </entry>
   
   <entry>
     <title>Your computer has 32KB of RAM</title>
-    <link href="http://ntrf.github.io/2020/06/23/32kb-of-ram/"/>
-    <id>http://ntrf.github.io/2020/06/23/32kb-of-ram/</id>
+    <link href="https://ntrf.github.io/2020/06/23/32kb-of-ram/"/>
+    <id>https://ntrf.github.io/2020/06/23/32kb-of-ram/</id>
     <published>2020-06-23T11:11:54.000Z</published>
     <updated>2020-08-20T15:03:40.474Z</updated>
     
@@ -87,19 +87,19 @@
     </summary>
     
     
-      <category term="rant" scheme="http://ntrf.github.io/categories/rant/"/>
+      <category term="rant" scheme="https://ntrf.github.io/categories/rant/"/>
     
     
-      <category term="retro" scheme="http://ntrf.github.io/tags/retro/"/>
+      <category term="retro" scheme="https://ntrf.github.io/tags/retro/"/>
     
-      <category term="cpu" scheme="http://ntrf.github.io/tags/cpu/"/>
+      <category term="cpu" scheme="https://ntrf.github.io/tags/cpu/"/>
     
   </entry>
   
   <entry>
     <title>I finally decided to fly</title>
-    <link href="http://ntrf.github.io/2018/08/01/i-finally-decided-to-fly/"/>
-    <id>http://ntrf.github.io/2018/08/01/i-finally-decided-to-fly/</id>
+    <link href="https://ntrf.github.io/2018/08/01/i-finally-decided-to-fly/"/>
+    <id>https://ntrf.github.io/2018/08/01/i-finally-decided-to-fly/</id>
     <published>2018-08-01T10:00:59.833Z</published>
     <updated>2020-06-23T11:08:05.387Z</updated>
     
