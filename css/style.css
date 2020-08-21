@@ -341,9 +341,11 @@ article .entry pre code {
 article .entry > table th {
   border-bottom: 1px solid #000;
   font-weight: bold;
+  padding: 0 3pt;
 }
 article .entry > table td {
   border-bottom: 1px solid rgba(0,0,0,0.2);
+  padding: 0 3pt;
 }
 article .entry ul,
 article .entry ol,

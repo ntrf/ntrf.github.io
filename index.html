@@ -215,6 +215,7 @@
 
 <p>This way Haxe would not have any references in generated header file, but i wanted a more “universal” solution.</p>
 <p>Well, that’s it. That’s the library. It’s not quite finished yet, but it serves as a nice proof, that you don’t need to write .cpp code in wrappers. I’ll probably make another post describing the library itself, when i get to properly test it’s implementation.</p>
+<p><strong>Update 1</strong>: If your going to work on your own library, keep in mind, that <code>null</code> and <code>0</code> are not interchangeable in Haxe. This is due to the fact that <code>Null&lt; Int &gt;</code> can take both values and they are distinct.</p>
 
       
     </div>
