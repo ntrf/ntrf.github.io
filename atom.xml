@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Ntrf&#39;s blog</title>
+  <icon>https://ntrf.github.io/icon/favicon-16.png</icon>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://ntrf.github.io/"/>
+  <updated>2022-03-21T00:00:00.000Z</updated>
+  <id>https://ntrf.github.io/</id>
+  
+  <author>
+    <name>Anton Nesterov // Ntrf</name>
+    
+  </author>
+
+</feed>
